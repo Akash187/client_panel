@@ -21,7 +21,7 @@ const SignIn = () => {
   };
 
   return (
-    <Container className="mt-5 pt-5">
+    <Container className="mt-5">
       <Row>
         <Col sm="12" md={{size: 6, offset: 3}}>
           <Card>

@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <div>
-      <Navbar color="primary" className="text-white" fixed expand="md">
+      <Navbar color="primary" light className="text-white" fixed="top" expand="md">
         <Container>
           <NavbarBrand>Client Panel</NavbarBrand>
           <NavbarToggler onClick={toggle} />

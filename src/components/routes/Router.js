@@ -14,16 +14,16 @@ const Router = () => {
     <BrowserRouter>
       <div>
         <Header/>
-        <div className="mt-5 pt-3">
+        <div className="mt-5 pt-4">
           <Switch>
             <Route exact path='/' component={Dashboard}/>
-            <Route exact path='/login' component={SignIn}/>
+            <Route path='/login' component={SignIn}/>
             <Route path='/register' component={SignUp}/>
             <Route path='/client/:id' component={ClientDetail}/>
             <Route path='/add' component={AddClient}/>
             <Route path='/setting' component={Setting}/>
             <Route path='/edit/:id' component={EditClient}/>
-            <Route path="*" render = {() => <Redirect to="/login" />}/>
+            <Route path="*" render = {() => <Redirect to="/" />}/>
           </Switch>
         </div>
       </div>

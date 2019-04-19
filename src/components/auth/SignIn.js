@@ -32,7 +32,7 @@ const SignIn = () => {
                     <i className="fas fa-lock"/>
                   </span>
                 </div>
-                <h2 className="text-uppercase text-primary font-weight-bold">Login</h2>
+                <h2 className="text-uppercase text-primary font-weight-bold mb-0">Login</h2>
               </div>
               <Form onSubmit={handleSubmit}>
                 <FormGroup>

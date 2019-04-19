@@ -35,7 +35,7 @@ const Register = () => {
                     <i className="fas fa-lock"/>
                   </span>
                 </div>
-                <h2 className="text-uppercase text-primary font-weight-bold">Register</h2>
+                <h2 className="text-uppercase text-primary font-weight-bold mb-0">Register</h2>
               </div>
               <Form onSubmit={handleSubmit}>
                 <FormGroup>

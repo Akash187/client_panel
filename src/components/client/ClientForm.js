@@ -25,7 +25,7 @@ const ClientForm = ({firstName='', lastName='', email='', mobile='', balance='',
         <Label for="name">Balance</Label>
         <Input type="text" value={balance} id="balance" placeholder="Balance" pattern="^\d+\.\d\d$" title="Valid balance is 10.00, 10.90 or 0.78." onChange={handleChange} required/>
       </FormGroup>
-      <Button color="primary" size="sm" block>Submit</Button>
+      <Button color="primary" block>Submit</Button>
     </Form>
   );
 };

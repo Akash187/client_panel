@@ -43,7 +43,7 @@ const SignIn = () => {
                   <Label for="examplePassword">Password</Label>
                   <Input type="password" value={password} id="password" placeholder="Password" onChange={handleChange}/>
                 </FormGroup>
-                <Button color="primary" size="sm" block>Login</Button>
+                <Button color="primary" block>Login</Button>
               </Form>
             </CardBody>
           </Card>

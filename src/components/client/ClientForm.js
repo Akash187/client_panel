@@ -1,21 +1,32 @@
 import React from 'react';
-import {Container, Row, Col, Card, CardBody, CardHeader} from 'reactstrap';
-import {NavLink} from "react-router-dom";
+import {Form, FormGroup, Label, Input, Button} from 'reactstrap';
 
-const ClientForm = () => {
+const ClientForm = ({firstName='', lastName='', email='', mobile='', balance='', handleChange, handleSubmit}) => {
+
   return (
-    <Container>
-      <Row>
-        <Col sm="12">
-          <div>
-            <NavLink exact to='/' className="text-primary d-flex align-items-center">
-              <i className="fas fa-arrow-circle-left mr-1"/>
-              <p className="font-weight-bold mb-0">Back To Dashboard</p>
-            </NavLink>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+    <Form onSubmit={handleSubmit}>
+      <FormGroup>
+        <Label for="name">First Name</Label>
+        <Input type="text" value={firstName} id="firstName" placeholder="First Name" pattern="[A-Za-z0-9_ ]{3,}" title="Minimum three letter name." onChange={handleChange} required/>
+      </FormGroup>
+      <FormGroup>
+        <Label for="name">Last Name</Label>
+        <Input type="text" value={lastName} id="lastName" placeholder="Last Name" pattern="[A-Za-z0-9_ ]{3,}" title="Minimum three letter name." onChange={handleChange} required/>
+      </FormGroup>
+      <FormGroup>
+        <Label for="email">Email</Label>
+        <Input type="email" value={email} id="email" placeholder="Email" onChange={handleChange}/>
+      </FormGroup>
+      <FormGroup>
+        <Label for="name">Mobile Number</Label>
+        <Input type="text" value={mobile} id="mobile" placeholder="Mobile Number" pattern="[0-9]{10}" title="Mobile Number must be of 10 digit." onChange={handleChange} required/>
+      </FormGroup>
+      <FormGroup>
+        <Label for="name">Balance</Label>
+        <Input type="text" value={balance} id="balance" placeholder="Balance" pattern="^\d+\.\d\d$" title="Valid balance is 10.00, 10.90 or 0.78." onChange={handleChange} required/>
+      </FormGroup>
+      <Button color="primary" size="sm" block>Submit</Button>
+    </Form>
   );
 };
 

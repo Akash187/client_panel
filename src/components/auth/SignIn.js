@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import {Container, Row, Col, Form, FormGroup, Label, Input, Card, CardBody, Button} from 'reactstrap';
+import { connect } from 'react-redux';
+import { signIn} from "../../store/actions/authActions";
+import {Container, Row, Col, Form, FormGroup, Label, Input, Card, CardBody, Button, Alert} from 'reactstrap';
 
-const SignIn = () => {
+const SignIn = ({authError, signIn}) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +18,7 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email + ": " + password);
+    signIn({email, password});
     // this.props.signUp(this.state);
   };
 
@@ -45,6 +47,9 @@ const SignIn = () => {
                 </FormGroup>
                 <Button color="primary" block>Login</Button>
               </Form>
+              {authError && <Alert className="mt-3" color="danger">
+                { authError }
+              </Alert>}
             </CardBody>
           </Card>
         </Col>
@@ -53,4 +58,13 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+const mapStateToProps = state => {
+  console.log(state);
+  return{
+    authError: state.auth.authError
+  }
+};
+
+const mapDispatchToProps = dispatch => ({signIn: (credentials) => dispatch(signIn(credentials))});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

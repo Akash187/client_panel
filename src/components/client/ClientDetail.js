@@ -4,14 +4,28 @@ import {NavLink} from "react-router-dom";
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
+import { updateBalance, deleteClient } from "../../store/actions/clientActions";
+import DeleteModal from "../layout/DeleteModal";
 
-const ClientDetail = ({ client, history }) => {
+const ClientDetail = ({ client, history, updateBalance, deleteClient}) => {
 
   const [balance, setBalance] = useState('');
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => {
+    setModal(!modal)
+  };
+
+  const removeClient = () => {
+    toggle();
+    deleteClient(client.id);
+    history.push('/');
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(balance);
+    updateBalance(client.id, balance);
+    setBalance('');
   };
 
   return (
@@ -26,7 +40,8 @@ const ClientDetail = ({ client, history }) => {
           </div>
           <ButtonGroup>
             <Button color="secondary" onClick={() => history.push(`/edit/${client.id}`)}>Edit</Button>
-            <Button color="danger">Delete</Button>
+            <Button color="danger" onClick={toggle}>Delete</Button>
+            <DeleteModal modal={modal} toggle={toggle} removeClient={removeClient}/>
           </ButtonGroup>
         </Col>
       </Row>
@@ -34,15 +49,15 @@ const ClientDetail = ({ client, history }) => {
         <Col sm="12">
           <Card>
             <CardHeader>
-              <h4 className="text-truncate font-weight-bold mb-0 text-capitalize">
+              <h5 className="text-truncate font-weight-bold mb-0 text-capitalize">
                 <span>{client.firstName}</span> <span>{client.lastName}</span>
-              </h4>
+              </h5>
             </CardHeader>
             <CardBody>
               <div className="d-flex flex-wrap justify-content-between">
-                <h4 className="text-truncate font-weight-bold mb-0">Client ID: <span className="font-weight-normal">{client.id}</span></h4>
+                <h5 className="font-weight-bold mb-0">Client ID: <span className="font-weight-normal">{client.id}</span></h5>
                 <div className="d-flex">
-                  <h4 className="text-truncate font-weight-bold mb-0">Balance: <span className="font-weight-normal text-success">${client.balance}</span></h4>
+                  <h4 className="font-weight-bold mb-0">Balance: <span className="font-weight-normal text-success">${client.balance}</span></h4>
                   <span className="ml-2 text-primary" id="toggler">
                     <i className="fas fa-pencil-alt"/>
                   </span>
@@ -60,10 +75,10 @@ const ClientDetail = ({ client, history }) => {
               </UncontrolledCollapse>
               <ListGroup className="mt-3">
                 <ListGroupItem>
-                  <p className="font-weight-bold text-truncate mb-0">Contact Email: <span className="font-weight-lighter">{ client.email }</span></p>
+                  <p className="font-weight-bold mb-0">Contact Email: <span className="font-weight-lighter">{ client.email }</span></p>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <p className="font-weight-bold text-truncate mb-0">Contact Number: <span className="font-weight-lighter">{ client.mobile }</span></p>
+                  <p className="font-weight-bold mb-0">Contact Number: <span className="font-weight-lighter">{ client.mobile }</span></p>
                 </ListGroupItem>
               </ListGroup>
             </CardBody>
@@ -73,6 +88,13 @@ const ClientDetail = ({ client, history }) => {
     </Container> :
       <div/>
 );
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    updateBalance: (id, balance) => dispatch(updateBalance(id, balance)),
+    deleteClient: (id) => dispatch(deleteClient(id))
+  }
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -85,7 +107,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default compose(
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect(props => [
     {
       collection: 'clients',

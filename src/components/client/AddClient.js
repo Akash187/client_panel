@@ -12,7 +12,7 @@ class AddClient extends Component {
     lastName: '',
     email: '',
     mobile: '',
-    balance: ''
+    balance: '0.00'
   };
 
   handleChange = (e) => {

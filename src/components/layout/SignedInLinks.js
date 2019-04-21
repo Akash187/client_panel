@@ -1,5 +1,5 @@
 import React from 'react';
-import {Nav, NavItem, Button} from 'reactstrap';
+import {Nav, NavItem} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import { connect } from 'react-redux';
 import { signOut } from "../../store/actions/authActions";

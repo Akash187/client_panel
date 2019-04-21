@@ -17,3 +17,33 @@ export const addClient = (clientDetail) => {
     });
   }
 };
+
+export const updateBalance = (id, newBalance) => {
+  return (dispatch, getState) => {
+    firestore.collection('clients')
+      .doc('/' + id)
+      .update({balance: newBalance})
+      .then(() => {
+        console.log('Balance Updated');
+        dispatch({type: 'UPDATE_BALANCE'})
+      })
+      .catch(function(error) {
+        console.error('Error writing document: ', error);
+        dispatch({type: 'UPDATE_BALANCE_ERROR', err: error.message})
+      })
+  }
+};
+
+export const deleteClient = (id) => {
+  return(dispatch, getState) => {
+    firestore.collection("clients")
+      .doc('/' + id).delete()
+      .then(() => {
+      console.log("Document successfully deleted!");
+      dispatch({type: 'DELETE_CLIENT'})
+    }).catch(function(error) {
+      console.error("Error removing document: ", error);
+      dispatch({type: 'DELETE_CLIENT_ERROR', err: error.message})
+    });
+  }
+};

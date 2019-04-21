@@ -1,5 +1,5 @@
 import React from 'react';
-import {Nav, NavItem} from 'reactstrap';
+import {Nav, NavItem, Button} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import { connect } from 'react-redux';
 import { signOut } from "../../store/actions/authActions";
@@ -14,7 +14,7 @@ const SignedInLinks = ({signOut, profile}) => {
       <NavItem className="mr-2">
         <NavLink to='/setting'>Setting</NavLink>
       </NavItem>
-      <NavItem><a href="#" onClick={signOut}>Logout</a></NavItem>
+      <NavItem><div style={{cursor: 'pointer'}} onClick={signOut}>Logout</div></NavItem>
     </Nav>
   );
 };

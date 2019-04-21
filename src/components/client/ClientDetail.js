@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {Container, Row, Col, Card, CardBody, CardHeader, Button, ButtonGroup, UncontrolledCollapse, Input, InputGroupAddon, InputGroup, Form, ListGroup, ListGroupItem} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import { connect } from 'react-redux';
-import { firestoreConnect, isLoaded } from 'react-redux-firebase';
+import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 
-const ClientDetail = (props) => {
+const ClientDetail = ({ client, history }) => {
 
   const [balance, setBalance] = useState('');
 
@@ -15,7 +15,7 @@ const ClientDetail = (props) => {
   };
 
   return (
-    <Container>
+    (client) ? <Container>
       <Row>
         <Col sm="12" className="d-flex justify-content-between align-items-center">
           <div>
@@ -25,7 +25,7 @@ const ClientDetail = (props) => {
             </NavLink>
           </div>
           <ButtonGroup>
-            <Button color="secondary" onClick={() => props.history.push('/edit/123')}>Edit</Button>
+            <Button color="secondary" onClick={() => history.push(`/edit/${client.id}`)}>Edit</Button>
             <Button color="danger">Delete</Button>
           </ButtonGroup>
         </Col>
@@ -34,13 +34,15 @@ const ClientDetail = (props) => {
         <Col sm="12">
           <Card>
             <CardHeader>
-              <h4 className="text-truncate font-weight-bold mb-0">Bob Jackson</h4>
+              <h4 className="text-truncate font-weight-bold mb-0 text-capitalize">
+                <span>{client.firstName}</span> <span>{client.lastName}</span>
+              </h4>
             </CardHeader>
             <CardBody>
               <div className="d-flex flex-wrap justify-content-between">
-                <h4 className="text-truncate font-weight-bold mb-0">Client ID: {<span className="font-weight-normal">12sdf3j43fj83jf834je843</span>}</h4>
+                <h4 className="text-truncate font-weight-bold mb-0">Client ID: <span className="font-weight-normal">{client.id}</span></h4>
                 <div className="d-flex">
-                  <h4 className="text-truncate font-weight-bold mb-0">Balance: {<span className="font-weight-normal text-success">$120.00</span>}</h4>
+                  <h4 className="text-truncate font-weight-bold mb-0">Balance: <span className="font-weight-normal text-success">${client.balance}</span></h4>
                   <span className="ml-2 text-primary" id="toggler">
                     <i className="fas fa-pencil-alt"/>
                   </span>
@@ -58,25 +60,36 @@ const ClientDetail = (props) => {
               </UncontrolledCollapse>
               <ListGroup className="mt-3">
                 <ListGroupItem>
-                  <p className="font-weight-bold text-truncate mb-0">Contact Email: {<span className="font-weight-lighter">aks18765@yahoo.co</span>}</p>
+                  <p className="font-weight-bold text-truncate mb-0">Contact Email: <span className="font-weight-lighter">{ client.email }</span></p>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <p className="font-weight-bold text-truncate mb-0">Contact Number: {<span className="font-weight-lighter">8675493572</span>}</p>
+                  <p className="font-weight-bold text-truncate mb-0">Contact Number: <span className="font-weight-lighter">{ client.mobile }</span></p>
                 </ListGroupItem>
               </ListGroup>
             </CardBody>
           </Card>
         </Col>
       </Row>
-    </Container>
-  );
+    </Container> :
+      <div/>
+);
 };
 
-const mapStateToProps = (state) => {
-  console.log(state);
+const mapStateToProps = (state, ownProps) => {
+  const doc = state.firestore.ordered;
   return{
-    auth: state.firebase.auth
+    id: ownProps.match.params.id,
+    auth: state.firebase.auth,
+    client: doc.clients ? doc.clients[0] : null
   }
 };
 
-export default connect(mapStateToProps)(ClientDetail);
+export default compose(
+  connect(mapStateToProps),
+  firestoreConnect(props => [
+    {
+      collection: 'clients',
+      doc: props.id
+    },
+  ])
+)(ClientDetail);

@@ -40,7 +40,7 @@ const Dashboard = ({ clients, history }) => {
             </thead>
             <tbody>
             {isLoaded(clients) && clients.map(client => (<tr key={client.id}>
-              <td className="text-uppercase"><span>{client.firstName}</span> <span>{client.lastName}</span></td>
+              <td className="text-capitalize"><span>{client.firstName}</span> <span>{client.lastName}</span></td>
               <td>{ client.email }</td>
               <td>${ client.balance }</td>
               <td>

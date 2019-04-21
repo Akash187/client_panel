@@ -47,3 +47,18 @@ export const deleteClient = (id) => {
     });
   }
 };
+
+export const updateClientDetail = (id, clientDetail) => {
+  return(dispatch, getState) => {
+    const authorId = getState().firebase.auth.uid;
+    firestore.collection("clients")
+      .doc('/' + id).set({ ...clientDetail, authorId })
+      .then(() => {
+        console.log("Document successfully deleted!");
+        dispatch({type: 'UPDATE_CLIENT_DETAIL'});
+      }).catch(function(error) {
+      console.error("Error removing document: ", error);
+      dispatch({type: 'UPDATE_CLIENT_DETAIL_ERROR', err: error.message})
+    });
+  }
+};

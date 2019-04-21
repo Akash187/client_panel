@@ -2,16 +2,28 @@ import React, {Component} from 'react';
 import {Container, Row, Col, Card, CardBody, CardHeader} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import ClientForm from "./ClientForm";
+import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
+import {updateClientDetail} from "../../store/actions/clientActions";
 
 class EditClient extends Component {
 
   state = {
-    firstName: 'Akash',
-    lastName: 'Seth',
-    email: 'aks@gmail.com',
-    mobile: '9567843735',
-    balance: '120.45'
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobile: '',
+    balance: ''
   };
+
+  componentWillReceiveProps(newProps) {
+    const { client } = newProps;
+    if(client){
+      console.log(client);
+      this.setState({...client});
+    }
+  }
 
   handleChange = (e) => {
     this.setState({
@@ -21,12 +33,14 @@ class EditClient extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state);
+    this.props.updateClientDetail(this.props.client.id, this.state);
+    this.props.history.push('/');
   };
 
   render() {
+    const {client} = this.props;
     return (
-      <div>
+      (client) ? <div>
         <Container>
           <Row>
             <Col sm="12">
@@ -57,9 +71,32 @@ class EditClient extends Component {
             </Col>
           </Row>
         </Container>
-      </div>
+      </div> : <div/>
     );
   }
 }
 
-export default EditClient;
+const mapDispatchToProps = (dispatch) => {
+  return{
+    updateClientDetail: (id, clientDetail) => dispatch(updateClientDetail(id, clientDetail))
+  }
+};
+
+const mapStateToProps = (state, ownProps) => {
+  const doc = state.firestore.ordered;
+  return{
+    id: ownProps.match.params.id,
+    auth: state.firebase.auth,
+    client: doc.clients ? doc.clients[0] : null
+  }
+};
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect(props => [
+    {
+      collection: 'clients',
+      doc: props.id
+    },
+  ])
+)(EditClient);

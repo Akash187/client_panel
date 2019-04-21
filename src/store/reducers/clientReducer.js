@@ -34,6 +34,16 @@ const clientReducer = (state = initState, action) => {
         ...state,
         err: action.err
       };
+    case 'UPDATE_CLIENT_DETAIL':
+      return {
+        ...state,
+        err: null
+      };
+    case 'UPDATE_CLIENT_DETAIL_ERROR':
+      return {
+        ...state,
+        err: action.err
+      };
     default:
       return state
   }

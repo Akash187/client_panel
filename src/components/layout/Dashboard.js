@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Container, Row, Col, Button, Table} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import { connect } from 'react-redux';
@@ -7,16 +7,13 @@ import { compose } from 'redux';
 
 const Dashboard = ({ clients }) => {
 
-  let [totalBalance, setTotalBalance] = useState(0.00);
-
-  useEffect(() => {
-    if(clients){
-      clients.forEach((client) => {
-        totalBalance += parseFloat(client.balance)
-      });
-      setTotalBalance(totalBalance);
-    }
-  }, [clients]);
+  const updateTotalBalance = (clients) => {
+    let totalBalance = 0;
+    clients.forEach((client) => {
+      totalBalance += parseFloat(client.balance)
+    });
+    return totalBalance;
+  };
 
   return (
     <Container>
@@ -30,7 +27,7 @@ const Dashboard = ({ clients }) => {
           </div>
           <div className="d-flex my-1">
             <h5 className="mb-0">Total Owed</h5>
-            <h5 className="mb-0 ml-1 text-primary">${totalBalance }</h5>
+            <h5 className="mb-0 ml-1 text-primary">${(clients) ? updateTotalBalance(clients) : 0.00}</h5>
           </div>
         </Col>
         <Col sm="12" md="2" className="d-md-flex justify-content-center align-items-center">

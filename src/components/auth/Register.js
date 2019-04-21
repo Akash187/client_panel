@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import {Container, Row, Col, Form, FormGroup, Label, Input, Card, CardBody, Button} from 'reactstrap';
+import {Container, Row, Col, Form, FormGroup, Label, Input, Card, CardBody, Button, Alert} from 'reactstrap';
+import { connect } from 'react-redux';
+import { signUp } from "../../store/actions/authActions";
 
-const Register = () => {
+const Register = ({authError, signUp}) => {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,8 +21,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(name + " : " + email + ": " + password);
-    // this.props.signUp(this.state);
+    signUp({ name, email, password });
   };
 
   return (
@@ -52,6 +53,9 @@ const Register = () => {
                 </FormGroup>
                 <Button color="primary" size="sm" block>Register</Button>
               </Form>
+              {authError && <Alert className="mt-3" color="danger">
+                { authError }
+              </Alert>}
             </CardBody>
           </Card>
         </Col>
@@ -60,4 +64,16 @@ const Register = () => {
   );
 };
 
-export default Register;
+const mapStateToProps = state => {
+  return{
+    authError: state.auth.authError
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    signUp: (newUser) => dispatch(signUp(newUser))
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

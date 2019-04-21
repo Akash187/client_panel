@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Container, Row, Col, Card, CardBody, CardHeader} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import ClientForm from "./ClientForm";
+import { connect } from "react-redux";
+import { addClient } from "../../store/actions/clientActions";
 
 class AddClient extends Component {
 
@@ -21,7 +23,8 @@ class AddClient extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state);
+    this.props.addClient(this.state);
+    this.props.history.push('/');
   };
 
   render() {
@@ -62,4 +65,10 @@ class AddClient extends Component {
   }
 }
 
-export default AddClient;
+const mapDispatchToProps = dispatch =>{
+  return{
+    addClient: (clientDetail) => dispatch(addClient(clientDetail))
+  }
+};
+
+export default connect(null, mapDispatchToProps)(AddClient);

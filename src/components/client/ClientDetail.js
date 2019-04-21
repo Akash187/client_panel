@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import {Container, Row, Col, Card, CardBody, CardHeader, Button, ButtonGroup, UncontrolledCollapse, Input, InputGroupAddon, InputGroup, Form, ListGroup, ListGroupItem} from 'reactstrap';
 import {NavLink} from "react-router-dom";
+import { connect } from 'react-redux';
+import { firestoreConnect, isLoaded } from 'react-redux-firebase';
+import { compose } from 'redux';
 
 const ClientDetail = (props) => {
 
@@ -69,4 +72,11 @@ const ClientDetail = (props) => {
   );
 };
 
-export default ClientDetail;
+const mapStateToProps = (state) => {
+  console.log(state);
+  return{
+    auth: state.firebase.auth
+  }
+};
+
+export default connect(mapStateToProps)(ClientDetail);

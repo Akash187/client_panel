@@ -2,13 +2,25 @@ import React, { useState} from 'react';
 import {Collapse, Navbar, NavbarToggler, NavbarBrand, Container} from 'reactstrap';
 import SignedOutLinks from "./SignedOutLinks";
 import SignedInLinks from "./SignedInLinks";
+import { connect } from 'react-redux';
+import { isLoaded } from 'react-redux-firebase';
 
-const Header = () => {
+const Header = ({ auth, profile }) => {
 
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => {
     setIsOpen(!isOpen);
+  };
+
+  const component = () => {
+    if (isLoaded(auth)) {
+      if(auth.uid){
+        return <SignedInLinks profile={profile}/>
+      }else{
+        return <SignedOutLinks/>
+      }
+    }
   };
 
   return (
@@ -18,8 +30,7 @@ const Header = () => {
           <NavbarBrand>Client Panel</NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
-            <SignedInLinks/>
-            <SignedOutLinks/>
+            {component()}
           </Collapse>
         </Container>
       </Navbar>
@@ -27,4 +38,12 @@ const Header = () => {
   );
 };
 
-export default Header;
+const mapStateToProps = state => {
+  console.log(state);
+  return{
+    auth: state.firebase.auth,
+    profile: state.firebase.profile
+  }
+};
+
+export default connect(mapStateToProps)(Header);

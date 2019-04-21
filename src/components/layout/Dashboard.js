@@ -1,8 +1,11 @@
 import React from 'react';
 import {Container, Row, Col, Button, Table} from 'reactstrap';
 import {NavLink} from "react-router-dom";
+import { connect } from 'react-redux';
+import { firestoreConnect, isLoaded } from 'react-redux-firebase';
+import { compose } from 'redux';
 
-const Dashboard = () => {
+const Dashboard = ({ clients, history }) => {
   return (
     <Container>
       <Row>
@@ -24,7 +27,7 @@ const Dashboard = () => {
           </NavLink>
         </Col>
       </Row>
-      <Row>
+      { isLoaded(clients) && (!clients) ? <h5 className="mt-3"> No Clients </h5> : <Row>
         <Col sm="12" md="10" className="mt-2">
           <Table striped responsive>
             <thead>
@@ -36,38 +39,38 @@ const Dashboard = () => {
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Mark Anthony</td>
-              <td>markanthoney12345678@gmail.com</td>
-              <td>@mdo</td>
+            {isLoaded(clients) && clients.map(client => (<tr key={client.id}>
+              <td className="text-uppercase"><span>{client.firstName}</span> <span>{client.lastName}</span></td>
+              <td>{ client.email }</td>
+              <td>${ client.balance }</td>
               <td>
-                <NavLink to='client/123'>
-                  <Button color="secondary" size="sm" className="px-2 d-flex align-items-center"><i className="fas fa-arrow-circle-right mr-1"/>Detail</Button>
+                <NavLink to={`/client/${client.id}`}>
+                  <Button color="secondary" size="sm" className="px-2 d-flex align-items-center"><i className="fas fa-arrow-circle-right mr-1" />Detail</Button>
                 </NavLink>
               </td>
-            </tr>
-            <tr>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-              <td>
-                <Button color="secondary" size="sm" className="px-2">Detail</Button>
-              </td>
-            </tr>
-            <tr>
-              <td>Larry</td>
-              <td>the Bird</td>
-              <td>@twitter</td>
-              <td>
-                <Button color="secondary" size="sm" className="px-2">Detail</Button>
-              </td>
-            </tr>
+            </tr>))
+            }
             </tbody>
           </Table>
         </Col>
-      </Row>
+      </Row>}
     </Container>
   );
 };
 
-export default Dashboard;
+const mapStateToProps = ({ firebase: { auth }, firestore: { ordered }}) => {
+  return{
+    clients: ordered.clients,
+    auth
+  }
+};
+
+export default compose(
+  connect(mapStateToProps),
+  firestoreConnect(props => [
+    {
+      collection: 'clients',
+      where: [['authorId', '==', props.auth.uid]],
+    },
+  ])
+)(Dashboard);

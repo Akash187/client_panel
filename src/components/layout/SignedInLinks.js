@@ -1,20 +1,28 @@
 import React from 'react';
 import {Nav, NavItem} from 'reactstrap';
 import {NavLink} from "react-router-dom";
+import { connect } from 'react-redux';
+import { signOut } from "../../store/actions/authActions";
 
-const SignedInLinks = () => {
+const SignedInLinks = ({signOut, profile}) => {
   return (
     <Nav className="ml-auto" navbar>
-      <NavItem className="mr-2 text-capitalize">Akash Kumar</NavItem>
+      <NavItem className="mr-2 text-uppercase">{ profile.name }</NavItem>
       <NavItem className="mr-2">
         <NavLink exact={true} to='/'>Dashboard</NavLink>
       </NavItem>
       <NavItem className="mr-2">
         <NavLink to='/setting'>Setting</NavLink>
       </NavItem>
-      <NavItem>Logout</NavItem>
+      <NavItem><a href="#" onClick={signOut}>Logout</a></NavItem>
     </Nav>
   );
 };
 
-export default SignedInLinks;
+const mapDispatchToProps = (dispatch) => {
+  return{
+    signOut: () => dispatch(signOut())
+  }
+};
+
+export default connect(null, mapDispatchToProps)(SignedInLinks);

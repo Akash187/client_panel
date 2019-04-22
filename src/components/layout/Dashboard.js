@@ -1,19 +1,21 @@
 import React from 'react';
-import {Container, Row, Col, Button, Table} from 'reactstrap';
+import {Container, Row, Col, Button} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import { connect } from 'react-redux';
 import { firestoreConnect, isLoaded } from 'react-redux-firebase';
 import { compose } from 'redux';
+import ClientList from "../client/ClientList";
 
-const Dashboard = ({ clients }) => {
+const Dashboard = ({ clients, setting }) => {
 
   const updateTotalBalance = (clients) => {
     let totalBalance = 0;
     clients.forEach((client) => {
       totalBalance += parseFloat(client.balance)
     });
-    return totalBalance;
+    return totalBalance.toFixed(2);
   };
+
 
   return (
     <Container>
@@ -31,38 +33,14 @@ const Dashboard = ({ clients }) => {
           </div>
         </Col>
         <Col sm="12" md="2" className="d-md-flex justify-content-center align-items-center">
-          <NavLink to='/add'>
-            <Button color="success" size="sm" className="px-3">+ New</Button>
-          </NavLink>
+          {
+            isLoaded(setting) && <div>{(setting && setting.allowNewClient) && <NavLink to='/add'>
+              <Button color="success" size="sm" className="px-3">+ New</Button>
+            </NavLink>}</div>
+          }
         </Col>
       </Row>
-      { isLoaded(clients) && (!clients) ? <h5 className="mt-3"> No Clients </h5> : <Row>
-        <Col sm="12" md="10" className="mt-2">
-          <Table striped responsive>
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Balance</th>
-              <th/>
-            </tr>
-            </thead>
-            <tbody>
-            {isLoaded(clients) && clients.map(client => (<tr key={client.id}>
-              <td className="text-capitalize"><span>{client.firstName}</span> <span>{client.lastName}</span></td>
-              <td>{ client.email }</td>
-              <td>${ client.balance }</td>
-              <td>
-                <NavLink to={`/client/${client.id}`}>
-                  <Button color="secondary" size="sm" className="px-2 d-flex align-items-center"><i className="fas fa-arrow-circle-right mr-1" />Detail</Button>
-                </NavLink>
-              </td>
-            </tr>))
-            }
-            </tbody>
-          </Table>
-        </Col>
-      </Row>}
+      { isLoaded(clients) && <ClientList clients={clients}/> }
     </Container>
   );
 };
@@ -70,6 +48,7 @@ const Dashboard = ({ clients }) => {
 const mapStateToProps = ({ firebase: { auth }, firestore: { ordered }}) => {
   return{
     clients: ordered.clients,
+    setting: ordered.setting ? ordered.setting[0]: null,
     auth
   }
 };
@@ -81,5 +60,9 @@ export default compose(
       collection: 'clients',
       where: [['authorId', '==', props.auth.uid]],
     },
+    {
+      collection: 'setting',
+      doc: props.auth.uid
+    }
   ])
 )(Dashboard);

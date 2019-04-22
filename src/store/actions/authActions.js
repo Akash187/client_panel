@@ -27,14 +27,22 @@ export const signUp = (newUser) => {
     auth.createUserWithEmailAndPassword(
       newUser.email, newUser.password
     ).then((res) => {
-      return firestore.collection('users').doc(res.user.uid)
+      firestore.collection('users').doc(res.user.uid)
         .set({
           name: newUser.name
+        });
+      return res.user.uid;
+    }).then((uid) => {
+      firestore.collection('setting').doc(uid).set({
+        allowNewClient: true,
+        disabledBalanceOnAdd: false,
+        disabledBalanceOnEdit: false
+      }).then(() => {
+        dispatch({
+          type: 'SIGNUP_SUCCESS'
         })
-    }).then(() => {
-      dispatch({type: 'SIGNUP_SUCCESS'});
+      })
     }).catch((err) => {
-      console.log(err);
       dispatch({type: 'SIGNUP_ERROR', err: err.message});
     })
   }

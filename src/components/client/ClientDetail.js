@@ -57,7 +57,7 @@ const ClientDetail = ({ client, history, updateBalance, deleteClient}) => {
               <div className="d-flex flex-wrap justify-content-between">
                 <h5 className="font-weight-bold mb-0">Client ID: <span className="font-weight-normal">{client.id}</span></h5>
                 <div className="d-flex">
-                  <h4 className="font-weight-bold mb-0">Balance: <span className="font-weight-normal text-success">${client.balance}</span></h4>
+                  <h4 className="font-weight-bold mb-0">Balance: <span className={"font-weight-normal text-primary"}>${client.balance}</span></h4>
                   <span className="ml-2 text-primary" id="toggler">
                     <i className="fas fa-pencil-alt"/>
                   </span>

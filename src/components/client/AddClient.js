@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import {Container, Row, Col, Card, CardBody, CardHeader} from 'reactstrap';
 import {NavLink} from "react-router-dom";
 import ClientForm from "./ClientForm";
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { compose } from 'redux';
 import { addClient } from "../../store/actions/clientActions";
 
 class AddClient extends Component {
@@ -28,6 +30,7 @@ class AddClient extends Component {
   };
 
   render() {
+    const {setting} = this.props;
     return (
       <div>
         <Container>
@@ -46,7 +49,7 @@ class AddClient extends Component {
               <Card>
                 <CardHeader>Edit Settings</CardHeader>
                 <CardBody>
-                  <ClientForm
+                  {(isLoaded(setting) && !isEmpty(setting)) && <ClientForm
                     firstName={this.state.firstName}
                     lastName={this.state.lastName}
                     email={this.state.email}
@@ -54,7 +57,8 @@ class AddClient extends Component {
                     balance={this.state.balance}
                     handleChange={this.handleChange}
                     handleSubmit={this.handleSubmit}
-                  />
+                    disableBalance={setting.disabledBalanceOnAdd}
+                  />}
                 </CardBody>
               </Card>
             </Col>
@@ -71,4 +75,19 @@ const mapDispatchToProps = dispatch =>{
   }
 };
 
-export default connect(null, mapDispatchToProps)(AddClient);
+const mapStateToProps = ({ firebase: { auth }, firestore: { ordered }}) => {
+  return{
+    setting: ordered.setting ? ordered.setting[0]: null,
+    auth
+  }
+};
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect(props => [
+    {
+      collection: 'setting',
+      doc: props.auth.uid
+    }
+  ])
+)(AddClient);

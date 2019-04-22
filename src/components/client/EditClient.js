@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import {updateClientDetail} from "../../store/actions/clientActions";
+import {isEmpty, isLoaded} from "react-redux-firebase";
 
 class EditClient extends Component {
 
@@ -20,7 +21,6 @@ class EditClient extends Component {
   componentWillReceiveProps(newProps) {
     const { client } = newProps;
     if(client){
-      console.log(client);
       this.setState({...client});
     }
   }
@@ -38,7 +38,7 @@ class EditClient extends Component {
   };
 
   render() {
-    const {client} = this.props;
+    const {client, setting} = this.props;
     return (
       (client) ? <div>
         <Container>
@@ -57,7 +57,7 @@ class EditClient extends Component {
               <Card>
                 <CardHeader>Edit Settings</CardHeader>
                 <CardBody>
-                  <ClientForm
+                  {(isLoaded(setting) && !isEmpty(setting)) && <ClientForm
                     firstName={this.state.firstName}
                     lastName={this.state.lastName}
                     email={this.state.email}
@@ -65,7 +65,8 @@ class EditClient extends Component {
                     balance={this.state.balance}
                     handleChange={this.handleChange}
                     handleSubmit={this.handleSubmit}
-                  />
+                    disableBalance={setting.disabledBalanceOnEdit}
+                  />}
                 </CardBody>
               </Card>
             </Col>
@@ -87,7 +88,8 @@ const mapStateToProps = (state, ownProps) => {
   return{
     id: ownProps.match.params.id,
     auth: state.firebase.auth,
-    client: doc.clients ? doc.clients[0] : null
+    client: doc.clients ? doc.clients[0] : null,
+    setting: doc.setting ? doc.setting[0]: null,
   }
 };
 
@@ -98,5 +100,9 @@ export default compose(
       collection: 'clients',
       doc: props.id
     },
+    {
+      collection: 'setting',
+      doc: props.auth.uid
+    }
   ])
 )(EditClient);

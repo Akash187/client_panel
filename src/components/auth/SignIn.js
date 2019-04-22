@@ -59,7 +59,6 @@ const SignIn = ({authError, signIn}) => {
 };
 
 const mapStateToProps = state => {
-  console.log(state);
   return{
     authError: state.auth.authError
   }

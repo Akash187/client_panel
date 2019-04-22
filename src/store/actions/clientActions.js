@@ -24,11 +24,9 @@ export const updateBalance = (id, newBalance) => {
       .doc('/' + id)
       .update({balance: newBalance})
       .then(() => {
-        console.log('Balance Updated');
         dispatch({type: 'UPDATE_BALANCE'})
       })
       .catch(function(error) {
-        console.error('Error writing document: ', error);
         dispatch({type: 'UPDATE_BALANCE_ERROR', err: error.message})
       })
   }
@@ -39,10 +37,8 @@ export const deleteClient = (id) => {
     firestore.collection("clients")
       .doc('/' + id).delete()
       .then(() => {
-      console.log("Document successfully deleted!");
       dispatch({type: 'DELETE_CLIENT'})
     }).catch(function(error) {
-      console.error("Error removing document: ", error);
       dispatch({type: 'DELETE_CLIENT_ERROR', err: error.message})
     });
   }
@@ -54,10 +50,8 @@ export const updateClientDetail = (id, clientDetail) => {
     firestore.collection("clients")
       .doc('/' + id).set({ ...clientDetail, authorId })
       .then(() => {
-        console.log("Document successfully deleted!");
         dispatch({type: 'UPDATE_CLIENT_DETAIL'});
       }).catch(function(error) {
-      console.error("Error removing document: ", error);
       dispatch({type: 'UPDATE_CLIENT_DETAIL_ERROR', err: error.message})
     });
   }
